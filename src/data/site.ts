@@ -1,7 +1,7 @@
 export const site = {
   name: 'Baki Bacacı',
   short: 'BAKİ',
-  role: 'Yazılım geliştirici · mobil ve oyun',
+  role: 'Web tasarım · yazılım · yapay zekâ',
   location: 'Ordu, Türkiye',
   email: 'bakibacaci05@gmail.com',
   socials: [

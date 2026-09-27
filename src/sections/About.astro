@@ -3,11 +3,18 @@ import Section from '../components/Section.astro';
 import Halftone from '../islands/Halftone.svelte';
 import { site } from '../data/site';
 
+const services = [
+  { icon: '🖥️', title: 'Web tasarım ve geliştirme', text: 'Tasarımdan yayına: hızlı, erişilebilir, akılda kalan siteler.' },
+  { icon: '📱', title: 'Mobil uygulama', text: 'Tek kod tabanından iOS, Android ve web.' },
+  { icon: '🎮', title: 'Oyun', text: 'Unity ve web ile oynanabilir, yayında oyunlar.' },
+  { icon: '✨', title: 'Yapay zekâ ile üretim', text: 'Tasarım, kod, hata ayıklama ve görselde yapay zekâyı iş akışımın merkezinde kullanıyorum.' },
+];
+
 const facts = [
   { icon: '📍', text: site.location },
   { icon: '🎓', text: 'Kırıkkale Üni. · Bilgisayar Programcılığı' },
   { icon: '🚀', text: 'Yayında 4 proje' },
-  { icon: '🎮', text: 'Unity ile oyun yapıyor' },
+  { icon: '✨', text: 'Yapay zekâyla çalışıyor' },
 ];
 ---
 <Section id="hakkimda" kicker="02" title="Hakkımda">
@@ -16,10 +23,14 @@ const facts = [
       <Halftone client:visible src={site.portrait} focus={site.portraitFocus} step={9} alt={`${site.name} portresi`} />
     </div>
     <div class="about__text">
-      <p class="about__lead">Ben <strong>{site.name}</strong>. Telefonda, tarayıcıda ve oyun motorunda çalışan şeyler yapıyorum.</p>
+      <p class="about__lead">Ben <strong>{site.name}</strong>. Web siteleri tasarlıyor, uygulamalar ve oyunlar geliştiriyorum; yapay zekâ da her aşamada yanımda.</p>
       <p>Kırıkkale Üniversitesi Bilgisayar Programcılığı son sınıf öğrencisiyim. Blöf, Draw The Suspect, Elver ve Memento şu anda yayında ve tarayıcıdan denenebiliyor; Blöf ile Draw The Suspect gerçek zamanlı çok oyunculu oyunlar. Unity oyunum Plip ise itch.io'da.</p>
-      <p>Tek kod tabanından iOS, Android ve web'e çıkan ürünler kurmayı, gerçek zamanlı veri senkronizasyonunu ve yayına alma sürecini baştan sona kendim yaparak öğrendim.</p>
+      <p>Bir fikri tasarımdan yayına kadar tek başıma götürebiliyorum: arayüzü tasarlamak, kodu yazmak, veritabanını kurmak ve yayına almak. Şu an gezdiğin site de bunun bir örneği.</p>
       <p>Şu an tam zamanlı yazılım geliştirici olarak çalışabileceğim bir ekip arıyorum. Uzaktan çalışmaya ve şehir değiştirmeye açığım.</p>
+      <h3 class="about__sub">Neler yaparım</h3>
+      <ul class="about__services" data-services>
+        {services.map((s) => <li><span class="ic" aria-hidden="true">{s.icon}</span><b>{s.title}</b><span>{s.text}</span></li>)}
+      </ul>
       <ul class="about__facts">
         {facts.map((f, i) => <li style={`--r:${[-3, 2, -1.5, 3][i]}deg`}><span aria-hidden="true">{f.icon}</span> {f.text}</li>)}
       </ul>
@@ -33,6 +44,17 @@ const facts = [
   .about__text p { font-size: 1.05rem; max-width: 58ch; }
   .about__lead { font-size: clamp(1.3rem, 2.4vw, 1.8rem) !important; line-height: 1.35; font-weight: 700; }
   .about__lead strong { background: var(--accent); padding: 0 .2em; }
+  .about__sub { font-size: 1.3rem; margin: 32px 0 14px; }
+  .about__services { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+  .about__services li {
+    display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: start;
+    background: var(--white); border: var(--border); box-shadow: 4px 4px 0 var(--ink); padding: 12px 14px;
+    transition: transform .3s var(--ease-spring), background .2s;
+  }
+  .about__services li:hover { transform: translate(-3px, -3px); background: var(--accent); }
+  .about__services .ic { grid-row: span 2; font-size: 1.4rem; }
+  .about__services b { font-size: .95rem; }
+  .about__services span:last-child { font-size: .85rem; }
   .about__facts { list-style: none; padding: 0; margin: 28px 0 0; display: flex; flex-wrap: wrap; gap: 12px; }
   .about__facts li {
     background: var(--white); border: var(--border); box-shadow: 4px 4px 0 var(--ink); padding: .45em .8em; font-weight: 800;

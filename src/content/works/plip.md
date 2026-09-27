@@ -7,7 +7,7 @@ facts:
   - 3B hacimli jöle görünümü için özel shader'lar
   - itch.io'da yayında, Türkçe ve İngilizce
 tech: [Unity, C#, HLSL]
-order: 2
+order: 3
 featured: true
 cover: /img/works/plip-cover.png
 shots: [/img/works/plip-1.png, /img/works/plip-2.png]

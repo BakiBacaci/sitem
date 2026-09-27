@@ -16,8 +16,8 @@ const HELP = [
 
 const COMMANDS: Record<string, () => TermResult> = {
   help: () => ({ lines: HELP }),
-  whoami: () => ({ lines: ['Baki Bacacı — yazılım geliştirici, mobil ve oyun.', 'Ordu · Kırıkkale Üni. Bilgisayar Programcılığı'] }),
-  projeler: () => ({ lines: ['Blöf           çok oyunculu parti oyunu', 'Plip           slime fiziği bulmaca oyunu', 'Thermal Drift  yamaç paraşütü uçuş oyunu', 'Ders Programı  C# masaüstü + veritabanı'] }),
+  whoami: () => ({ lines: ['Baki Bacacı — web tasarım, yazılım ve yapay zekâ.', 'Web siteleri, mobil uygulamalar ve oyunlar yapıyorum.', 'Ordu · Kırıkkale Üni. Bilgisayar Programcılığı'] }),
+  projeler: () => ({ lines: ['Bu site        tasarım + geliştirme, sıfırdan', 'Draw The Suspect  tarayıcıda çok oyunculu çizim oyunu', 'Blöf           çok oyunculu parti oyunu', 'Plip           slime fiziği bulmaca oyunu', 'Thermal Drift  yamaç paraşütü uçuş oyunu', 'Ders Programı  C# masaüstü + veritabanı'] }),
   cv: () => ({ lines: ['CV şimdilik burada değil. LinkedIn\'den ya da e-postayla isteyebilirsin.'] }),
   oyna: () => ({ lines: ['yilan.exe başlatılıyor...'], action: { type: 'open', appId: 'yilan' } }),
   clear: () => ({ lines: [], action: { type: 'clear' } }),

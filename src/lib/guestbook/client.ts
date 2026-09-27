@@ -25,8 +25,8 @@ export async function getGuestbook(): Promise<Guestbook | null> {
       appId: env.PUBLIC_FIREBASE_APP_ID,
     });
     if (env.PUBLIC_RECAPTCHA_KEY) {
-      const { initializeAppCheck, ReCaptchaV3Provider } = await import('firebase/app-check');
-      try { initializeAppCheck(app, { provider: new ReCaptchaV3Provider(env.PUBLIC_RECAPTCHA_KEY), isTokenAutoRefreshEnabled: true }); } catch { /* zaten başlatılmış */ }
+      const { initializeAppCheck, ReCaptchaEnterpriseProvider } = await import('firebase/app-check');
+      try { initializeAppCheck(app, { provider: new ReCaptchaEnterpriseProvider(env.PUBLIC_RECAPTCHA_KEY), isTokenAutoRefreshEnabled: true }); } catch { /* zaten başlatılmış */ }
     }
     const db = fs.getFirestore(app);
     const notes = fs.collection(db, 'notes');

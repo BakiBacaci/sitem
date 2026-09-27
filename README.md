@@ -42,7 +42,7 @@ Kodun içine dokunmadan değiştirilebilen her şey veri dosyalarında:
 
 1. Firebase konsolunda bir proje oluştur, Firestore'u aç, bir web uygulaması ekle.
 2. `.env.example` dosyasını `.env` olarak kopyala ve değerleri doldur.
-3. **App Check'i aç (yayından önce yap):** Firebase konsolu → App Check → web uygulamasını reCAPTCHA v3 ile kaydet, site anahtarını `PUBLIC_RECAPTCHA_KEY` olarak ekle. Sonra App Check → APIs → **Cloud Firestore → Enforce**. Zorunlu hale getirilmezse App Check hiçbir şeyi engellemez; 30 saniye sınırı ve küfür filtresi yalnızca tarayıcıda çalışır, bu yüzden spam'e karşı asıl koruma bu adımdır.
+3. **App Check'i aç (spam koruması):** Firebase konsolu → App Check → web uygulaması → **Fraud Defense (reCAPTCHA Enterprise)** → anahtar oluştur (alan adları: `bakibacaci.web.app`, `bakibacaci.firebaseapp.com`, `localhost`). Çıkan **site anahtarını** `.env` içinde `PUBLIC_RECAPTCHA_KEY` olarak yaz, yeniden build al ve yayınla. Sonra App Check → APIs → **Cloud Firestore → Enforce**. (Klasik reCAPTCHA v3 kullanımdan kalktı; kod Enterprise sağlayıcısını kullanıyor.)
 4. Kuralları yükle: `firebase deploy --only firestore:rules`
 
 `.env` yoksa pano "şu an kapalı" gösterir, sitenin geri kalanı normal çalışır. Çizimler otomatik denetlenemez; uygunsuz bir kağıdı Firebase konsolunda `notes` koleksiyonundan silebilirsin.

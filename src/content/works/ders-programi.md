@@ -7,7 +7,7 @@ facts:
   - SQL Server ve Dapper ile veri erişimi
   - Sistem analizi ve tasarımı raporuyla birlikte
 tech: [C#, .NET, Windows Forms, SQL Server, Dapper]
-order: 4
+order: 5
 featured: true
 links: []
 ---

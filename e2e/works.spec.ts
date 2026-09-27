@@ -1,10 +1,10 @@
 import { test, expect } from './fixtures';
 
-test('İşler bölümünde sıralı 4 kart, ilki Blöf', async ({ page }) => {
+test('İşler bölümünde sıralı 6 kart, ilki bu site', async ({ page }) => {
   await page.goto('/');
   const cards = page.locator('#isler .work-card');
-  await expect(cards).toHaveCount(4);
-  await expect(cards.first().locator('h3')).toHaveText('Blöf');
+  await expect(cards).toHaveCount(6);
+  await expect(cards.first().locator('h3')).toHaveText('Bu Site');
 });
 
 test('Blöf kartı detay sayfasına götürür', async ({ page }) => {

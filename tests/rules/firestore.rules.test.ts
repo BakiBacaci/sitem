@@ -5,7 +5,7 @@ import { assertFails, assertSucceeds, initializeTestEnvironment, type RulesTestE
 import { addDoc, collection, deleteDoc, doc, getDocs, serverTimestamp, setDoc, Timestamp, updateDoc } from 'firebase/firestore';
 
 let env: RulesTestEnvironment;
-const valid = () => ({ text: 'selam', sticker: 'yildiz', color: 'accent', x: 0.2, y: 0.8, createdAt: serverTimestamp() });
+const valid = () => ({ text: 'selam', drawing: '0|10,10 20,20', paper: 'sari', x: 0.2, y: 0.8, createdAt: serverTimestamp() });
 
 beforeAll(async () => {
   env = await initializeTestEnvironment({ projectId: 'demo-site', firestore: { rules: readFileSync('firestore.rules', 'utf8') } });
@@ -21,6 +21,14 @@ describe('notes kuralları', () => {
   });
   it('160 birimden uzun metin reddedilir', async () => {
     await assertFails(addDoc(collection(db(), 'notes'), { ...valid(), text: 'a'.repeat(161) }));
+  });
+  it('yalnızca çizimli not eklenebilir, boş not reddedilir', async () => {
+    await assertSucceeds(addDoc(collection(db(), 'notes'), { ...valid(), text: '' }));
+    await assertFails(addDoc(collection(db(), 'notes'), { ...valid(), text: '  ', drawing: '' }));
+  });
+  it('çizim alanına başka veri konamaz', async () => {
+    await assertFails(addDoc(collection(db(), 'notes'), { ...valid(), drawing: '<svg onload=alert(1)>' }));
+    await assertFails(addDoc(collection(db(), 'notes'), { ...valid(), drawing: '0|1,1 '.repeat(2500) }));
   });
   it('fazladan alan reddedilir', async () => {
     await assertFails(addDoc(collection(db(), 'notes'), { ...valid(), admin: true }));

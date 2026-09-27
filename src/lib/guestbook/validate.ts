@@ -1,9 +1,10 @@
-export const STICKERS = ['yildiz', 'kalp', 'simsek', 'gulen'] as const;
-export const COLORS = ['accent', 'ink', 'white'] as const;
+import { decodeStrokes, MAX_DRAWING_CHARS } from '../board/strokes';
+
+export const PAPERS = ['sari', 'pembe', 'turuncu', 'mavi'] as const;
 export const MAX_LEN = 80;
 export const MIN_INTERVAL_MS = 30_000;
 
-export type NoteInput = { text: string; sticker: string; color: string; x: number; y: number };
+export type NoteInput = { text: string; drawing: string; paper: string; x: number; y: number };
 export type NoteError = 'bos' | 'uzun' | 'kufur' | 'gecersiz';
 
 // Kelimenin başıyla eşleşenler (salaksın, aptallar) ve yalnızca tam kelime olarak eşleşenler (kısa ve masum kelimelerin içinde geçebilenler).
@@ -35,9 +36,10 @@ const inUnit = (v: number) => Number.isFinite(v) && v >= 0 && v <= 1;
 
 export function validateNote(n: NoteInput): { ok: true; note: NoteInput } | { ok: false; error: NoteError } {
   const text = n.text.trim();
-  if (!text) return { ok: false, error: 'bos' };
+  if (!text && !n.drawing) return { ok: false, error: 'bos' };
   if (graphemeCount(text) > MAX_LEN) return { ok: false, error: 'uzun' };
-  if (!(STICKERS as readonly string[]).includes(n.sticker) || !(COLORS as readonly string[]).includes(n.color) || !inUnit(n.x) || !inUnit(n.y)) {
+  const drawingOk = !n.drawing || (n.drawing.length <= MAX_DRAWING_CHARS && decodeStrokes(n.drawing).length > 0);
+  if (!drawingOk || !(PAPERS as readonly string[]).includes(n.paper) || !inUnit(n.x) || !inUnit(n.y)) {
     return { ok: false, error: 'gecersiz' };
   }
   if (containsProfanity(text)) return { ok: false, error: 'kufur' };

@@ -1,7 +1,7 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Ziyaretçi duvarı: herkes okur, herkes geçerli bir not ekler; kimse düzenleyemez ya da silemez
+    // Post-it panosu: herkes okur, herkes geçerli bir not ekler; kimse düzenleyemez ya da silemez
     // (silme yalnızca Firebase konsolundan, sahibi tarafından).
     match /notes/{noteId} {
       allow read: if true;
@@ -10,12 +10,13 @@ service cloud.firestore {
     }
 
     function isValidNote(d) {
-      return d.keys().hasOnly(['text', 'sticker', 'color', 'x', 'y', 'createdAt'])
-        && d.keys().hasAll(['text', 'sticker', 'color', 'x', 'y', 'createdAt'])
-        && d.text is string && d.text.size() > 0 && d.text.size() <= 160 // 80 grapheme; emoji'ler UTF-16'da 2 birim sayılabilir
-        && d.text.trim().size() > 0
-        && d.sticker in ['yildiz', 'kalp', 'simsek', 'gulen']
-        && d.color in ['accent', 'ink', 'white']
+      return d.keys().hasOnly(['text', 'drawing', 'paper', 'x', 'y', 'createdAt'])
+        && d.keys().hasAll(['text', 'drawing', 'paper', 'x', 'y', 'createdAt'])
+        && d.text is string && d.text.size() <= 160 // 80 grapheme; emoji'ler UTF-16'da 2 birim sayılabilir
+        && d.drawing is string && d.drawing.size() <= 12000
+        && d.drawing.matches('^[0-9|, ;]*$') // yalnızca çizgi verisi, başka hiçbir şey
+        && (d.text.trim().size() > 0 || d.drawing.size() > 0)
+        && d.paper in ['sari', 'pembe', 'turuncu', 'mavi']
         && d.x is number && d.x >= 0 && d.x <= 1
         && d.y is number && d.y >= 0 && d.y <= 1
         && d.createdAt == request.time;

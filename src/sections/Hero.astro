@@ -1,11 +1,13 @@
 ---
 import HeroCube from '../islands/HeroCube.svelte';
+import BoardTeaser from '../islands/board/BoardTeaser.svelte';
 import Marquee from '../components/Marquee.astro';
 import { site } from '../data/site';
 ---
 <section id="giris" class="hero">
   <div class="hero__stage">
     <div class="hero__cube" data-intro="cube"><HeroCube client:visible /></div>
+    <div class="hero__board" data-intro="board"><BoardTeaser client:load /></div>
     <div class="hero__badge" data-intro="badge" aria-hidden="true">
       <svg viewBox="0 0 100 100">
         <defs><path id="badge-circle" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0" /></defs>
@@ -42,6 +44,7 @@ import { site } from '../data/site';
     background: var(--ink); color: var(--accent); border: var(--border);
         animation: spin 9s linear infinite;
   }
+  .hero__board { position: absolute; right: max(var(--gutter), 11vw); top: 52%; z-index: 4; }
   .hero__badge svg { width: 100%; height: 100%; }
   .hero__badge text { fill: var(--accent); font: 800 11px var(--font-mono); letter-spacing: 1px; }
   .hero__badge text.c { font-size: 26px; }
@@ -53,6 +56,7 @@ import { site } from '../data/site';
   @keyframes spin { to { rotate: 360deg; } }
 
   @media (max-width: 767px) {
+    .hero__board { top: auto; bottom: 2%; right: var(--gutter); }
     .hero__cube { width: 78vw; }
     .hero__badge { translate: 0 0; left: var(--gutter); width: 76px; height: 76px; }
   }
@@ -70,7 +74,8 @@ import { site } from '../data/site';
     const tl = gsap.timeline({ defaults: { ease: 'back.out(1.7)' } });
     tl.from(hero.querySelectorAll('.line__in'), { yPercent: 110, duration: 0.9, stagger: 0.12 })
       .from(hero.querySelector('[data-intro="cube"]'), { scale: 0, rotate: -40, duration: 1.1, ease: 'elastic.out(1, .6)' }, 0.15)
-      .from(hero.querySelector('[data-intro="badge"]'), { scale: 0, rotate: -180, duration: 0.8 }, 0.45);
+      .from(hero.querySelector('[data-intro="badge"]'), { scale: 0, rotate: -180, duration: 0.8 }, 0.45)
+      .from(hero.querySelector('[data-intro="board"]'), { y: -120, rotate: 20, opacity: 0, duration: 0.9, ease: 'bounce.out' }, 0.6);
   }
   document.addEventListener('astro:page-load', intro);
 </script>

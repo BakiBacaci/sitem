@@ -17,7 +17,6 @@ export const APPS: AppDef[] = [
   { id: 'yilan', title: 'yilan.exe', icon: '🐍', width: 440, height: 540, load: () => import('../../islands/os/apps/Snake.svelte') },
   { id: 'plip', title: 'plip.exe', icon: '🟢', width: 720, height: 520, load: () => import('../../islands/os/apps/Plip.svelte') },
   { id: 'blof', title: 'blof.exe', icon: '🃏', width: 480, height: 420, load: () => import('../../islands/os/apps/Blof.svelte') },
-  { id: 'duvar', title: 'duvar.exe', icon: '📌', width: 640, height: 520, load: () => import('../../islands/os/apps/Guestbook.svelte') },
 ];
 
 export function findApp(id: AppId): AppDef | undefined {

@@ -1,1 +1,1 @@
-export type AppId = 'yilan' | 'terminal' | 'plip' | 'blof' | 'duvar' | 'hakkimda';
+export type AppId = 'yilan' | 'terminal' | 'plip' | 'blof' | 'hakkimda';

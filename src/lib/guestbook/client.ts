@@ -31,12 +31,12 @@ export async function getGuestbook(): Promise<Guestbook | null> {
     const db = fs.getFirestore(app);
     const notes = fs.collection(db, 'notes');
     return {
-      async list(limit = 120) {
+      async list(limit = 80) {
         const snap = await fs.getDocs(fs.query(notes, fs.orderBy('createdAt', 'desc'), fs.limit(limit)));
         return snap.docs.map((d) => ({ id: d.id, ...(d.data() as NoteInput) }));
       },
       async add(n) {
-        await fs.addDoc(notes, { text: n.text, sticker: n.sticker, color: n.color, x: n.x, y: n.y, createdAt: fs.serverTimestamp() });
+        await fs.addDoc(notes, { text: n.text, drawing: n.drawing, paper: n.paper, x: n.x, y: n.y, createdAt: fs.serverTimestamp() });
       },
     };
   } catch {

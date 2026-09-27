@@ -1,6 +1,6 @@
 # bakibacaci — kişisel site
 
-Kağıt Brutal stilinde kişisel site: tek uzun ana sayfa, proje ve blog sayfaları, `/oyun` altında **BAKİ OS** masaüstü ve Firebase'li ziyaretçi duvarı.
+Kağıt Brutal stilinde kişisel site: tek uzun ana sayfa, proje ve blog sayfaları, `/oyun` altında **BAKİ OS** masaüstü ve girişte, ziyaretçilerin yazıp çizebildiği Firebase'li **post-it panosu**.
 
 Astro 7 · Svelte 5 · Three.js · GSAP + Lenis · Firebase (Firestore + Hosting)
 
@@ -38,14 +38,14 @@ Kodun içine dokunmadan değiştirilebilen her şey veri dosyalarında:
 
 **BAKİ OS'a uygulama eklemek:** `src/islands/os/apps/` altına bir Svelte bileşeni koy, `src/lib/os/appIds.ts` ve `src/lib/os/apps.ts` dosyalarına birer satır ekle.
 
-## Ziyaretçi duvarı (Firebase)
+## Post-it panosu (Firebase)
 
 1. Firebase konsolunda bir proje oluştur, Firestore'u aç, bir web uygulaması ekle.
 2. `.env.example` dosyasını `.env` olarak kopyala ve değerleri doldur.
 3. **App Check'i aç (yayından önce yap):** Firebase konsolu → App Check → web uygulamasını reCAPTCHA v3 ile kaydet, site anahtarını `PUBLIC_RECAPTCHA_KEY` olarak ekle. Sonra App Check → APIs → **Cloud Firestore → Enforce**. Zorunlu hale getirilmezse App Check hiçbir şeyi engellemez; 30 saniye sınırı ve küfür filtresi yalnızca tarayıcıda çalışır, bu yüzden spam'e karşı asıl koruma bu adımdır.
 4. Kuralları yükle: `firebase deploy --only firestore:rules`
 
-`.env` yoksa duvar "şu an kapalı" gösterir, sitenin geri kalanı normal çalışır. Notları silmek yalnızca Firebase konsolundan yapılır.
+`.env` yoksa pano "şu an kapalı" gösterir, sitenin geri kalanı normal çalışır. Çizimler otomatik denetlenemez; uygunsuz bir kağıdı Firebase konsolunda `notes` koleksiyonundan silebilirsin.
 
 ## Yayına alma
 

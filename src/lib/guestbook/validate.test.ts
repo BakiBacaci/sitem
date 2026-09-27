@@ -1,15 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import { canPost, containsProfanity, validateNote, type NoteInput } from './validate';
 
-const note = (over: Partial<NoteInput> = {}): NoteInput => ({ text: 'selam!', sticker: 'yildiz', color: 'accent', x: 0.5, y: 0.5, ...over });
+const note = (over: Partial<NoteInput> = {}): NoteInput => ({ text: 'selam!', drawing: '', paper: 'sari', x: 0.5, y: 0.5, ...over });
+const DRAWING = '0|10,10 20,20 30,40';
 
 describe('validateNote', () => {
   it('geçerli notu kırpılmış metinle kabul eder', () => {
     expect(validateNote(note({ text: '  merhaba  ' }))).toEqual({ ok: true, note: note({ text: 'merhaba' }) });
   });
 
-  it('sadece boşluk → bos', () => {
+  it('yazı da çizim de yoksa → bos', () => {
     expect(validateNote(note({ text: '   ' }))).toEqual({ ok: false, error: 'bos' });
+  });
+
+  it('yazısız ama çizimli not geçerli', () => {
+    expect(validateNote(note({ text: '', drawing: DRAWING }))).toEqual({ ok: true, note: note({ text: '', drawing: DRAWING }) });
+  });
+
+  it('bozuk ya da çok uzun çizim → gecersiz', () => {
+    expect(validateNote(note({ drawing: '<svg onload=alert(1)>' }))).toEqual({ ok: false, error: 'gecersiz' });
+    expect(validateNote(note({ drawing: '0|1,1 '.repeat(3000) }))).toEqual({ ok: false, error: 'gecersiz' });
   });
 
   it('81 karakter → uzun, 80 karakter → ok', () => {
@@ -23,9 +33,8 @@ describe('validateNote', () => {
     expect(validateNote(note({ text: '👨‍👩‍👧'.repeat(80) })).ok).toBe(true);
   });
 
-  it('geçersiz sticker, renk ya da konum → gecersiz', () => {
-    expect(validateNote(note({ sticker: 'bomba' }))).toEqual({ ok: false, error: 'gecersiz' });
-    expect(validateNote(note({ color: 'mor' }))).toEqual({ ok: false, error: 'gecersiz' });
+  it('geçersiz kağıt rengi ya da konum → gecersiz', () => {
+    expect(validateNote(note({ paper: 'mor' }))).toEqual({ ok: false, error: 'gecersiz' });
     expect(validateNote(note({ x: 1.5 }))).toEqual({ ok: false, error: 'gecersiz' });
     expect(validateNote(note({ y: Number.NaN }))).toEqual({ ok: false, error: 'gecersiz' });
   });

@@ -1,5 +1,6 @@
 ---
 title: Bu Site
+lang: tr
 kind: Web tasarım + geliştirme
 summary: Şu an gezdiğin site. Tasarımından koduna, 3D küpünden post-it panosuna kadar baştan sona.
 facts:

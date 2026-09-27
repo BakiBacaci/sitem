@@ -16,7 +16,7 @@ const tilt = [-2, 1.5, -1, 2][index % 4];
   </div>
   <div class="work-card__body">
     <p class="work-card__kind">{kind}</p>
-    <h3 lang={titleLang(title)}>{title}</h3>
+    <h3 lang={work.data.lang ?? titleLang(title)}>{title}</h3>
     <p class="work-card__summary">{summary}</p>
     <ul class="work-card__tech">{tech.slice(0, 4).map((t) => <li>{t}</li>)}</ul>
     <span class="work-card__go" aria-hidden="true">İNCELE ↗</span>

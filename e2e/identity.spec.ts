@@ -11,6 +11,7 @@ test('İşler: ilk kart bu site, Draw The Suspect öne çıkan işlerde', async 
   await page.goto('/');
   const cards = page.locator('#isler .work-card h3');
   await expect(cards.first()).toHaveText('Bu Site');
+  expect(await cards.first().innerText()).toBe('BU SİTE'); // Türkçe büyük harf
   await expect(cards.filter({ hasText: 'Draw The Suspect' })).toHaveCount(1);
   await expect(page.locator('#isler .archive')).not.toContainText('Draw The Suspect');
 });

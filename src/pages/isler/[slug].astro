@@ -18,7 +18,7 @@ const { title, kind, summary, facts, tech, cover, shots, links } = work.data;
 
     <header class="work__head">
       <p class="work__kind">{kind}</p>
-      <h1 lang={titleLang(title)}>{title}</h1>
+      <h1 lang={work.data.lang ?? titleLang(title)}>{title}</h1>
       <p class="work__summary">{summary}</p>
       {links.length > 0 && (
         <div class="work__links">

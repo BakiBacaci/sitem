@@ -5,6 +5,8 @@ const works = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/works' }),
   schema: z.object({
     title: z.string(),
+    /** Başlığın dili; verilmezse Latin harfli adlar İngilizce sayılır (büyük harfte i → I). */
+    lang: z.enum(['tr', 'en']).optional(),
     kind: z.string(),
     summary: z.string(),
     facts: z.array(z.string()),

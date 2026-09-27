@@ -1,0 +1,69 @@
+---
+const links = [
+  { href: '/#isler', label: 'İŞLER' },
+  { href: '/#hakkimda', label: 'BEN' },
+  { href: '/#oyun-alani', label: 'OYUN' },
+  { href: '/#iletisim', label: 'YAZ' },
+];
+---
+<header class="nav" transition:persist>
+  <a class="nav__logo" href="/#giris">BAKİ <span aria-hidden="true">®</span></a>
+  <button class="nav__toggle" type="button" aria-label="Menü" aria-expanded="false" aria-controls="nav-links">
+    <span></span><span></span>
+  </button>
+  <nav id="nav-links" class="nav__links" aria-label="Ana menü">
+    {links.map((l) => <a href={l.href}>{l.label}</a>)}
+  </nav>
+</header>
+
+<style>
+  .nav {
+    position: fixed; inset: 0 0 auto 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px var(--gutter);
+    font-weight: 800; letter-spacing: .06em;
+    pointer-events: none;
+  }
+  .nav > * { pointer-events: auto; }
+  .nav__logo { text-decoration: none; background: var(--paper); border: var(--border); padding: .35em .7em; box-shadow: 4px 4px 0 var(--ink); }
+  .nav__links { display: flex; gap: 6px; }
+  .nav__links a {
+    text-decoration: none; background: var(--paper); border: var(--border); padding: .35em .8em;
+    transition: background .2s, transform .3s var(--ease-spring);
+  }
+  .nav__links a:hover { background: var(--accent); transform: translateY(-3px) rotate(-2deg); }
+  .nav__toggle { display: none; }
+
+  @media (max-width: 767px) {
+    .nav__toggle {
+      display: grid; gap: 6px; place-content: center;
+      width: 48px; height: 48px; background: var(--accent); border: var(--border); box-shadow: 4px 4px 0 var(--ink); cursor: pointer;
+    }
+    .nav__toggle span { width: 22px; height: 3px; background: var(--ink); transition: transform .3s var(--ease-spring); }
+    .nav__toggle[aria-expanded='true'] span:first-child { transform: translateY(4.5px) rotate(45deg); }
+    .nav__toggle[aria-expanded='true'] span:last-child { transform: translateY(-4.5px) rotate(-45deg); }
+    .nav__links {
+      position: fixed; inset: 76px 16px auto 16px; flex-direction: column; gap: 10px;
+      background: var(--paper); border: var(--border); box-shadow: var(--shadow); padding: 16px;
+      font-family: var(--font-display); font-size: 1.6rem;
+      visibility: hidden; opacity: 0; transform: translateY(-12px) rotate(-1deg);
+      transition: opacity .2s, transform .35s var(--ease-spring), visibility 0s .35s;
+    }
+    .nav__links.is-open { visibility: visible; opacity: 1; transform: none; transition: opacity .2s, transform .35s var(--ease-spring); }
+    .nav__links a { border-width: 0 0 3px 0; padding: .3em 0; background: none; }
+  }
+</style>
+
+<script>
+  function bindNav() {
+    const btn = document.querySelector<HTMLButtonElement>('.nav__toggle');
+    const menu = document.getElementById('nav-links');
+    if (!btn || !menu || btn.dataset.navBound) return;
+    btn.dataset.navBound = '1';
+    const set = (open: boolean) => { btn.setAttribute('aria-expanded', String(open)); menu.classList.toggle('is-open', open); };
+    btn.addEventListener('click', () => set(btn.getAttribute('aria-expanded') !== 'true'));
+    menu.addEventListener('click', (e) => { if ((e.target as Element).closest('a')) set(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
+  }
+  document.addEventListener('astro:page-load', bindNav);
+</script>

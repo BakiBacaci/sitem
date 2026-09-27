@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../sections/Hero.astro';
+import Works from '../sections/Works.astro';
+import About from '../sections/About.astro';
+import Skills from '../sections/Skills.astro';
+import Journey from '../sections/Journey.astro';
+import Posts from '../sections/Posts.astro';
+import PlayCard from '../sections/PlayCard.astro';
+import Contact from '../sections/Contact.astro';
+import SectionDots from '../components/SectionDots.astro';
+
+const sections = [
+  { id: 'giris', label: 'Giriş' },
+  { id: 'isler', label: 'İşler' },
+  { id: 'hakkimda', label: 'Hakkımda' },
+  { id: 'yetenekler', label: 'Yetenekler' },
+  { id: 'yolculuk', label: 'Yolculuk' },
+  { id: 'oyun-alani', label: 'Oyun Alanı' },
+  { id: 'yazilar', label: 'Yazılar' },
+  { id: 'iletisim', label: 'İletişim' },
+];
+---
+<BaseLayout title="Baki Bacacı — Yazılım geliştirici">
+  <SectionDots sections={sections} />
+  <main>
+    <Hero />
+    <Works />
+    <About />
+    <Skills />
+    <Journey />
+    <PlayCard />
+    <Posts />
+    <Contact />
+  </main>
+</BaseLayout>
+
+<script>
+  import { reveal } from '../lib/motion';
+  document.addEventListener('astro:page-load', () => reveal('[data-reveal-title]', { y: 80, rotate: -3 }));
+</script>

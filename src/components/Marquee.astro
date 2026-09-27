@@ -1,0 +1,30 @@
+---
+interface Props {
+  items: string[];
+  reverse?: boolean;
+  speed?: number; // bir turun saniye cinsinden süresi
+  tone?: 'ink' | 'accent' | 'white';
+  lang?: string;
+}
+const { items, reverse = false, speed = 30, tone = 'ink', lang } = Astro.props;
+const run = [...items, ...items];
+---
+<div class:list={['marquee', `marquee--${tone}`]} lang={lang} data-marquee data-reverse={reverse || undefined} style={`--speed:${speed}s`}>
+  <div class="marquee__track" aria-hidden="true">
+    {run.map((it) => <span class="marquee__item">★ {it}</span>)}
+  </div>
+  <span class="sr-only">{items.join(', ')}</span>
+</div>
+
+<style>
+  .marquee { overflow: hidden; border-block: var(--border); white-space: nowrap; }
+  .marquee--ink { background: var(--ink); color: var(--accent); }
+  .marquee--accent { background: var(--accent); color: var(--ink); }
+  .marquee--white { background: var(--white); color: var(--ink); }
+  .marquee__track { display: inline-flex; animation: marquee var(--speed) linear infinite; }
+  .marquee[data-reverse] .marquee__track { animation-direction: reverse; }
+  .marquee:hover .marquee__track { animation-duration: calc(var(--speed) * 3); }
+  .marquee__item { padding: .55em 1.2em; font-weight: 800; text-transform: uppercase; }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .marquee__track { animation: none; } }
+</style>

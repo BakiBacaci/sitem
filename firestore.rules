@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Ziyaretçi duvarı: herkes okur, herkes geçerli bir not ekler; kimse düzenleyemez ya da silemez
+    // (silme yalnızca Firebase konsolundan, sahibi tarafından).
+    match /notes/{noteId} {
+      allow read: if true;
+      allow create: if isValidNote(request.resource.data);
+      allow update, delete: if false;
+    }
+
+    function isValidNote(d) {
+      return d.keys().hasOnly(['text', 'sticker', 'color', 'x', 'y', 'createdAt'])
+        && d.keys().hasAll(['text', 'sticker', 'color', 'x', 'y', 'createdAt'])
+        && d.text is string && d.text.size() > 0 && d.text.size() <= 160 // 80 grapheme; emoji'ler UTF-16'da 2 birim sayılabilir
+        && d.text.trim().size() > 0
+        && d.sticker in ['yildiz', 'kalp', 'simsek', 'gulen']
+        && d.color in ['accent', 'ink', 'white']
+        && d.x is number && d.x >= 0 && d.x <= 1
+        && d.y is number && d.y >= 0 && d.y <= 1
+        && d.createdAt == request.time;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

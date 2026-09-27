@@ -1,0 +1,32 @@
+<div class="cursor" aria-hidden="true" transition:persist></div>
+
+<style>
+  .cursor {
+    position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none;
+    width: 18px; height: 18px; margin: -9px 0 0 -9px;
+    background: var(--accent); border: 2.5px solid var(--ink); border-radius: 50%;
+    opacity: 0; transition: width .25s var(--ease-spring), height .25s var(--ease-spring), margin .25s var(--ease-spring), opacity .2s;
+  }
+  :global(html.has-cursor) .cursor { opacity: 1; }
+  :global(html.has-cursor.cursor-hover) .cursor { width: 44px; height: 44px; margin: -22px 0 0 -22px; background: transparent; }
+</style>
+
+<script>
+  import { prefersReducedMotion } from '../lib/motion';
+
+  if (!prefersReducedMotion() && matchMedia('(pointer: fine)').matches) {
+    let x = -100, y = -100, cx = x, cy = y, started = false;
+    const tick = () => {
+      const el = document.querySelector<HTMLElement>('.cursor');
+      cx += (x - cx) * 0.25; cy += (y - cy) * 0.25;
+      if (el) el.style.transform = `translate(${cx}px, ${cy}px)`;
+      requestAnimationFrame(tick);
+    };
+    window.addEventListener('pointermove', (e) => {
+      x = e.clientX; y = e.clientY;
+      if (!started) { started = true; cx = x; cy = y; document.documentElement.classList.add('has-cursor'); requestAnimationFrame(tick); }
+      const hot = (e.target as Element | null)?.closest('a, button, [data-cursor-hover]');
+      document.documentElement.classList.toggle('cursor-hover', !!hot);
+    }, { passive: true });
+  }
+</script>

@@ -1,0 +1,32 @@
+---
+interface Props { sections: { id: string; label: string }[] }
+const { sections } = Astro.props;
+---
+<nav class="dots" aria-label="Bölümler">
+  {sections.map((s) => (
+    <a href={`#${s.id}`} data-dot={s.id} title={s.label}><span class="sr-only">{s.label}</span></a>
+  ))}
+</nav>
+
+<style>
+  .dots { position: fixed; right: 14px; top: 50%; translate: 0 -50%; display: flex; flex-direction: column; gap: 10px; z-index: 40; }
+  .dots a { width: 12px; height: 12px; border: 2.5px solid var(--ink); border-radius: 50%; background: var(--paper); transition: transform .3s var(--ease-spring), background .2s; }
+  .dots a[aria-current="true"] { background: var(--accent); transform: scale(1.35); }
+  @media (max-width: 767px) { .dots { display: none; } }
+</style>
+
+<script>
+  function bindDots() {
+    const dots = new Map<string, HTMLElement>();
+    document.querySelectorAll<HTMLElement>('[data-dot]').forEach((d) => dots.set(d.dataset.dot!, d));
+    if (dots.size === 0) return;
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        dots.forEach((d, id) => d.setAttribute('aria-current', String(id === e.target.id)));
+      }
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    dots.forEach((_, id) => { const s = document.getElementById(id); if (s) io.observe(s); });
+  }
+  document.addEventListener('astro:page-load', bindDots);
+</script>

@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import Section from '../components/Section.astro';
+import WorkCard from '../components/WorkCard.astro';
+import ArchiveList from '../components/ArchiveList.astro';
+
+const works = (await getCollection('works', (w) => w.data.featured)).sort((a, b) => a.data.order - b.data.order);
+---
+<Section id="isler" kicker="01" title="İşler">
+  <div class="works">
+    {works.map((w, i) => <WorkCard work={w} index={i} />)}
+  </div>
+  <ArchiveList />
+</Section>
+
+<style>
+  .works { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: clamp(28px, 4vw, 56px); }
+</style>
+
+<script>
+  import { reveal } from '../lib/motion';
+  document.addEventListener('astro:page-load', () => reveal('#isler .work-card', { rotate: -8, y: 80, stagger: 0.1 }));
+</script>

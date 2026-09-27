@@ -1,0 +1,74 @@
+---
+import Section from '../components/Section.astro';
+import { journey } from '../data/journey';
+---
+<Section id="yolculuk" kicker="04" title="Yolculuk">
+  <div class="journey">
+    <ol class="journey__track">
+      {journey.map((j, i) => (
+        <li class="stop" style={`--r:${[-2, 1.5, -1, 2.5][i % 4]}deg`}>
+          <span class="stop__year">{j.year}</span>
+          <h3 class="stop__title">{j.title}</h3>
+          <p class="stop__text">{j.text}</p>
+        </li>
+      ))}
+      <li class="stop-next" aria-hidden="true"><span class="stop__year">SIRADA</span><h3 class="stop__title">?</h3></li>
+    </ol>
+  </div>
+</Section>
+
+<style>
+  .journey__track { list-style: none; margin: 0; padding: 0 0 0 26px; display: grid; gap: 28px; border-left: var(--border); }
+  .stop, .stop-next {
+    position: relative; background: var(--white); border: var(--border); box-shadow: var(--shadow);
+    padding: 22px 24px; max-width: 520px; rotate: var(--r);
+  }
+  .stop::before, .stop-next::before {
+    content: ''; position: absolute; left: -45px; top: 26px; width: 20px; height: 20px;
+    background: var(--accent); border: var(--border); border-radius: 50%;
+  }
+  .stop__year { display: inline-block; background: var(--ink); color: var(--accent); font-weight: 800; padding: .1em .55em; }
+  .stop__title { font-size: clamp(1.4rem, 2.6vw, 2.1rem); margin: .45em 0 .3em; }
+  .stop__text { margin: 0; }
+  .stop-next { background: var(--accent); }
+  .stop-next .stop__title { font-size: 4rem; }
+
+  @media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+    .journey { overflow-x: auto; margin-inline: calc(-1 * var(--gutter)); padding: 30px var(--gutter) 40px; }
+    :global(.journey-pinned) .journey { overflow: visible; }
+    .journey__track {
+      display: flex; gap: 48px; width: max-content; align-items: flex-start;
+      border-left: 0; border-top: var(--border); padding: 44px 0 0;
+    }
+    .stop, .stop-next { width: 400px; flex: none; }
+    .stop::before, .stop-next::before { left: 24px; top: -59px; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { prefersReducedMotion } from '../lib/motion';
+
+  let mm: gsap.MatchMedia | null = null;
+
+  function setup() {
+    mm?.revert();
+    const section = document.getElementById('yolculuk');
+    const track = section?.querySelector<HTMLElement>('.journey__track');
+    if (!section || !track || prefersReducedMotion()) return;
+    gsap.registerPlugin(ScrollTrigger);
+    mm = gsap.matchMedia();
+    mm.add('(min-width: 900px)', () => {
+      section.classList.add('journey-pinned');
+      const distance = () => Math.max(0, track.scrollWidth - window.innerWidth + 120);
+      gsap.to(track, {
+        x: () => -distance(),
+        ease: 'none',
+        scrollTrigger: { trigger: section, start: 'top top', end: () => `+=${distance()}`, pin: true, scrub: 1, invalidateOnRefresh: true },
+      });
+      return () => section.classList.remove('journey-pinned');
+    });
+  }
+  document.addEventListener('astro:page-load', setup);
+</script>

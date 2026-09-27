@@ -1,0 +1,18 @@
+---
+import Section from '../components/Section.astro';
+import PostCard from '../components/PostCard.astro';
+import { publishedPosts } from '../lib/posts';
+
+const posts = (await publishedPosts()).slice(0, 3);
+---
+<Section id="yazilar" kicker="06" title="Yazılar">
+  <div class="posts">
+    {posts.map((p, i) => <PostCard post={p} index={i} />)}
+  </div>
+  <a class="posts__all" href="/yazilar">Tüm yazılar →</a>
+</Section>
+
+<style>
+  .posts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 32px; }
+  .posts__all { display: inline-block; margin-top: 40px; font-weight: 800; border-bottom: 4px solid var(--accent); text-decoration: none; }
+</style>

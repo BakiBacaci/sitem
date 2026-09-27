@@ -1,0 +1,33 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { publishedPosts } from '../../lib/posts';
+
+export async function getStaticPaths() {
+  const posts = await publishedPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const date = post.data.date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<BaseLayout title={`${post.data.title} — Baki Bacacı`} description={post.data.summary}>
+  <main class="post">
+    <a class="post__back" href="/yazilar">← Tüm yazılar</a>
+    <time datetime={post.data.date.toISOString()}>{date}</time>
+    <h1>{post.data.title}</h1>
+    <article class="post__body"><Content /></article>
+  </main>
+</BaseLayout>
+
+<style>
+  .post { padding: 110px var(--gutter) 120px; max-width: 820px; margin: 0 auto; }
+  .post__back { display: inline-block; font-weight: 800; text-decoration: none; border: var(--border); padding: .35em .8em; background: var(--white); box-shadow: 4px 4px 0 var(--ink); }
+  time { display: inline-block; margin-top: 48px; font-weight: 800; background: var(--accent); padding: .1em .5em; }
+  h1 { font-size: clamp(2.6rem, 8vw, 5.5rem); margin: .3em 0 .6em; }
+  .post__body :global(p) { font-size: 1.1rem; line-height: 1.75; }
+  .post__body :global(h2) { font-size: clamp(1.6rem, 4vw, 2.4rem); margin: 1.4em 0 .4em; }
+  .post__body :global(a) { text-decoration-color: var(--accent); text-decoration-thickness: 3px; }
+  .post__body :global(code) { background: var(--white); border: 2px solid var(--ink); padding: 0 .3em; }
+</style>

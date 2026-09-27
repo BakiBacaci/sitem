@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Os from '../islands/os/Os.svelte';
+---
+<BaseLayout title="BAKİ OS — Oyun Alanı" description="Sitenin içindeki masaüstü: mini oyunlar, terminal ve deneyler." bare>
+  <h1 class="sr-only">BAKİ OS — Oyun Alanı</h1>
+  <div class="os-root"><Os client:only="svelte" /></div>
+  <noscript><p style="padding:24px">BAKİ OS için JavaScript gerekiyor. <a href="/">Siteye dön</a></p></noscript>
+</BaseLayout>
+
+<style is:global>
+  /* Tam ekran masaüstü: aşağı kaydırma sayfayı yenilemesin, sayfa kendisi kaymasın. */
+  html:has(body > .os-root), body:has(> .os-root) { overscroll-behavior: none; overflow: hidden; }
+</style>

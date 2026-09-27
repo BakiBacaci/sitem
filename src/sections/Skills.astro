@@ -1,0 +1,23 @@
+---
+import Section from '../components/Section.astro';
+import Marquee from '../components/Marquee.astro';
+import { skills } from '../data/skills';
+
+const tones = ['ink', 'accent', 'white'] as const;
+---
+<Section id="yetenekler" kicker="03" title="Yetenekler">
+  <p class="skills__note">Günlük olarak kullandığım araçlar. Üzerine gel, yavaşlasın.</p>
+  <div class="skills">
+  {skills.map((band, i) => (
+    <div class="skills__band" style={`--r:${[-2, 1.5, -1][i % 3]}deg`}>
+      <Marquee items={band} reverse={i % 2 === 1} tone={tones[i % 3]} speed={26 + i * 6} lang="en" />
+    </div>
+  ))}
+  </div>
+</Section>
+
+<style>
+  .skills__note { margin: 0; font-weight: 700; }
+  .skills { display: grid; gap: 40px; width: 100vw; margin: 48px 0 0 calc(50% - 50vw); overflow: hidden; padding-block: 24px; }
+  .skills__band { rotate: var(--r); margin-inline: -4vw; font-size: clamp(1.1rem, 2.6vw, 2rem); }
+</style>

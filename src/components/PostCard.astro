@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { post: CollectionEntry<'posts'>; index?: number }
+const { post, index = 0 } = Astro.props;
+const date = post.data.date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<a class="post-card" href={`/yazilar/${post.id}`} style={`--r:${[1, -1.5, 2][index % 3]}deg`}>
+  <time datetime={post.data.date.toISOString()}>{date}</time>
+  <h3>{post.data.title}</h3>
+  <p>{post.data.summary}</p>
+  <span class="post-card__go" aria-hidden="true">OKU →</span>
+</a>
+
+<style>
+  .post-card {
+    display: flex; flex-direction: column; gap: .5em; text-decoration: none;
+    background: var(--white); border: var(--border); box-shadow: var(--shadow); padding: 22px 24px;
+    rotate: var(--r); transition: rotate .35s var(--ease-spring), transform .35s var(--ease-spring), box-shadow .35s var(--ease-spring);
+  }
+  .post-card:hover { rotate: 0deg; transform: translate(-4px, -4px); box-shadow: var(--shadow-lg); }
+  time { font-size: .8rem; font-weight: 800; background: var(--accent); align-self: flex-start; padding: .1em .5em; }
+  h3 { font-size: clamp(1.4rem, 2.6vw, 2rem); }
+  p { margin: 0; }
+  .post-card__go { margin-top: auto; padding-top: .6em; font-weight: 800; }
+</style>

@@ -1,0 +1,92 @@
+---
+import Section from '../components/Section.astro';
+import { site } from '../data/site';
+---
+<Section id="iletisim" kicker="07" title="Yaz<br />Bana" tone="accent">
+  <div class="contact">
+    <p class="contact__lead">Bir iş, bir proje ya da sadece "merhaba" için. Genelde aynı gün dönerim.</p>
+
+    <button class="contact__big" type="button" data-copy-email data-email={site.email} data-magnetic data-cursor-hover>
+      <span class="contact__big-label">YAZ BANA</span>
+      <span class="contact__big-mail">{site.email}</span>
+    </button>
+    <p class="contact__status" data-copy-status role="status" aria-live="polite"></p>
+
+    <div class="contact__row">
+      <ul class="contact__socials">
+        {site.socials.map((s) => <li><a href={s.href} target="_blank" rel="noopener">{s.label}</a></li>)}
+        <li><a href={`mailto:${site.email}`}>E-posta</a></li>
+      </ul>
+    </div>
+  </div>
+</Section>
+
+<footer class="footer">
+  <span>© {new Date().getFullYear()} {site.name}</span>
+  <span>Kalın çerçeveler ve fazla animasyonla elde yapıldı.</span>
+</footer>
+
+<style>
+  .contact__lead { font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 700; max-width: 40ch; margin: 0 0 40px; }
+  .contact__big {
+    display: grid; gap: 10px; width: 100%; text-align: left; cursor: pointer;
+    background: var(--ink); color: var(--paper); border: var(--border); box-shadow: 12px 12px 0 var(--paper);
+    padding: clamp(28px, 5vw, 64px); font: inherit;
+    transition: transform .35s var(--ease-spring), box-shadow .35s var(--ease-spring), translate .25s ease-out;
+  }
+  .contact__big:hover { transform: rotate(-1deg) scale(1.01); }
+  .contact__big:active { transform: translate(8px, 8px); box-shadow: 4px 4px 0 var(--paper); }
+  .contact__big-label { font: 900 clamp(3rem, 12vw, 10rem)/.95 var(--font-display); color: var(--accent); }
+  .contact__big-mail { font-weight: 800; font-size: clamp(1rem, 2.4vw, 1.6rem); word-break: break-all; }
+  .contact__status { min-height: 1.6em; font-weight: 800; margin: 18px 0 0; }
+  .contact__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; margin-top: 32px; }
+  .contact__socials { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+  .contact__socials a {
+    display: block; text-decoration: none; font-weight: 800; background: var(--paper); border: var(--border);
+    padding: .5em 1em; box-shadow: 4px 4px 0 var(--ink); transition: transform .3s var(--ease-spring);
+  }
+  .contact__socials a:hover { transform: translateY(-4px) rotate(-3deg); }
+  .footer {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px;
+    background: var(--ink); color: var(--paper); padding: 22px var(--gutter); font-size: .85rem;
+  }
+</style>
+
+<script>
+  import { burst } from '../lib/confetti';
+  import { bindMagnets } from '../lib/magnetic';
+
+  // Pano API'si odak yokken asılı kalabiliyor: kısa bir süre bekle, olmazsa eski yönteme düş.
+  async function copyText(text: string): Promise<boolean> {
+    try {
+      const ok = await Promise.race([
+        navigator.clipboard.writeText(text).then(() => true),
+        new Promise<boolean>((r) => setTimeout(() => r(false), 800)),
+      ]);
+      if (ok) return true;
+    } catch { /* eski yönteme geç */ }
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    const ok = document.execCommand('copy');
+    ta.remove();
+    return ok;
+  }
+
+  function bindCopy() {
+    const btn = document.querySelector<HTMLButtonElement>('[data-copy-email]');
+    const status = document.querySelector<HTMLElement>('[data-copy-status]');
+    if (!btn || !status || btn.dataset.copyBound) return;
+    btn.dataset.copyBound = '1';
+    btn.addEventListener('click', async (e) => {
+      const email = btn.dataset.email!;
+      status.textContent = (await copyText(email))
+        ? `✓ ${email} kopyalandı. Görüşmek üzere!`
+        : `Kopyalanamadı, adresim: ${email}`;
+      burst(e.clientX || innerWidth / 2, e.clientY || innerHeight / 2);
+    });
+  }
+  document.addEventListener('astro:page-load', () => { bindCopy(); bindMagnets(); });
+</script>

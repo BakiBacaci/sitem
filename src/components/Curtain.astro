@@ -1,0 +1,58 @@
+<div class="curtain" aria-hidden="true" transition:persist><span>→</span></div>
+
+<style>
+  /* Konum CSS'te transform ile verilmez: GSAP onu ayrı bir piksel kaydırması olarak okuyup
+     kendi yüzde değerine ekliyordu ve perde ekranın ortasında kalıyordu. Görünürlük + GSAP yeterli. */
+  .curtain {
+    position: fixed; inset: 0; z-index: 90; pointer-events: none;
+    background: var(--accent); border-inline: var(--border);
+    display: grid; place-items: center;
+    visibility: hidden;
+  }
+  .curtain span { font: 900 clamp(4rem, 14vw, 12rem)/1 var(--font-display); }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { prefersReducedMotion } from '../lib/motion';
+
+  const SAFETY_MS = 2500;
+  const el = () => document.querySelector<HTMLElement>('.curtain');
+  let safety: ReturnType<typeof setTimeout> | undefined;
+
+  function hide() {
+    const c = el();
+    if (!c) return;
+    clearTimeout(safety);
+    gsap.killTweensOf(c);
+    gsap.set(c, { x: 0, xPercent: -101, visibility: 'hidden' });
+  }
+
+  function slideOut() {
+    const c = el();
+    if (!c) return;
+    clearTimeout(safety);
+    if (getComputedStyle(c).visibility === 'hidden') return hide();
+    gsap.to(c, { xPercent: 101, duration: 0.4, ease: 'power3.out', delay: 0.05, overwrite: true, onComplete: hide });
+  }
+
+  document.addEventListener('astro:before-preparation', (ev) => {
+    const c = el();
+    if (!c || prefersReducedMotion()) return;
+    const load = ev.loader;
+    ev.loader = async () => {
+      gsap.set(c, { x: 0, xPercent: -101, visibility: 'visible' });
+      // Gezinme yarıda kalırsa ya da bir şey ters giderse perde asla ekranda kalmasın.
+      clearTimeout(safety);
+      safety = setTimeout(slideOut, SAFETY_MS);
+      await Promise.all([
+        gsap.to(c, { xPercent: 0, duration: 0.35, ease: 'power3.in', overwrite: true }).then(),
+        load(),
+      ]);
+    };
+  });
+
+  document.addEventListener('astro:after-swap', slideOut);
+  window.addEventListener('pageshow', hide);
+  hide();
+</script>

@@ -1,0 +1,79 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { titleLang } from '../../lib/lang';
+
+export async function getStaticPaths() {
+  const works = await getCollection('works');
+  return works.map((work) => ({ params: { slug: work.id }, props: { work } }));
+}
+
+const { work } = Astro.props;
+const { Content } = await render(work);
+const { title, kind, summary, facts, tech, cover, shots, links } = work.data;
+---
+<BaseLayout title={`${title} — Baki Bacacı`} description={summary}>
+  <main class="work">
+    <a class="work__back" href="/#isler">← Tüm işler</a>
+
+    <header class="work__head">
+      <p class="work__kind">{kind}</p>
+      <h1 lang={titleLang(title)}>{title}</h1>
+      <p class="work__summary">{summary}</p>
+      {links.length > 0 && (
+        <div class="work__links">
+          {links.map((l) => <a href={l.href} target="_blank" rel="noopener">{l.label} ↗</a>)}
+        </div>
+      )}
+    </header>
+
+    <div class="work__cover">
+      {cover ? <img src={cover} alt={`${title} ekran görüntüsü`} /> : <span aria-hidden="true">{title.slice(0, 1)}</span>}
+    </div>
+
+    <div class="work__grid">
+      <aside class="work__side">
+        <h2 class="work__label">Öne çıkanlar</h2>
+        <ul class="work__facts">{facts.map((f) => <li>{f}</li>)}</ul>
+        <h2 class="work__label">Teknolojiler</h2>
+        <ul class="work__tech">{tech.map((t) => <li>{t}</li>)}</ul>
+      </aside>
+      <article class="work__body"><Content /></article>
+    </div>
+
+    {shots.length > 0 && (
+      <div class="work__shots">{shots.map((s, i) => <img src={s} alt={`${title} ekran görüntüsü ${i + 1}`} loading="lazy" />)}</div>
+    )}
+  </main>
+</BaseLayout>
+
+<style>
+  .work { padding: 110px var(--gutter) 120px; max-width: 1280px; margin: 0 auto; }
+  .work__back { display: inline-block; font-weight: 800; text-decoration: none; border: var(--border); padding: .35em .8em; background: var(--white); box-shadow: 4px 4px 0 var(--ink); }
+  .work__back:hover { background: var(--accent); }
+  .work__head { margin: 48px 0 40px; }
+  .work__kind + h1 { margin-top: .35em; }
+  .work__kind { font-weight: 800; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 .6em; }
+  .work h1 { font-size: clamp(3rem, 11vw, 9rem); }
+  .work__summary { font-size: clamp(1.05rem, 2vw, 1.35rem); max-width: 48ch; margin: .8em 0 0; }
+  .work__links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .work__links a { font-weight: 800; text-decoration: none; background: var(--accent); border: var(--border); padding: .6em 1.1em; box-shadow: 5px 5px 0 var(--ink); transition: transform .3s var(--ease-spring); }
+  .work__links a:hover { transform: translate(-3px, -3px) rotate(-2deg); }
+  .work__cover { border: var(--border); box-shadow: var(--shadow); background: var(--accent); aspect-ratio: 16 / 8; display: grid; place-items: center; overflow: hidden; }
+  .work__cover img { width: 100%; height: 100%; object-fit: cover; }
+  .work__cover span { font: 900 clamp(8rem, 22vw, 16rem)/1 var(--font-display); }
+  .work__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: clamp(32px, 5vw, 72px); margin-top: 64px; }
+  .work__label { font-size: .95rem; margin: 0 0 12px; }
+  .work__facts, .work__tech { list-style: none; padding: 0; margin: 0 0 32px; display: grid; gap: 8px; }
+  .work__facts li { border-left: 6px solid var(--accent); padding-left: 10px; }
+  .work__tech { display: flex; flex-wrap: wrap; }
+  .work__tech li { border: 2px solid var(--ink); padding: .1em .55em; font-weight: 700; font-size: .85rem; background: var(--white); }
+  .work__body :global(h2) { font-size: clamp(1.8rem, 4vw, 2.8rem); margin: 1.2em 0 .4em; }
+  .work__body :global(h2:first-child) { margin-top: 0; }
+  .work__body :global(h2)::after { content: '.' / ''; color: var(--accent); }
+  .work__body :global(p), .work__body :global(li) { font-size: 1.05rem; max-width: 64ch; }
+  .work__body :global(code) { background: var(--white); border: 2px solid var(--ink); padding: 0 .3em; }
+  .work__shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 24px; margin-top: 64px; }
+  .work__shots img { border: var(--border); box-shadow: var(--shadow); }
+  @media (max-width: 800px) { .work__grid { grid-template-columns: 1fr; } }
+</style>

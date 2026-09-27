@@ -1,0 +1,76 @@
+---
+import HeroCube from '../islands/HeroCube.svelte';
+import Marquee from '../components/Marquee.astro';
+import { site } from '../data/site';
+---
+<section id="giris" class="hero">
+  <div class="hero__stage">
+    <div class="hero__cube" data-intro="cube"><HeroCube client:visible /></div>
+    <div class="hero__badge" data-intro="badge" aria-hidden="true">
+      <svg viewBox="0 0 100 100">
+        <defs><path id="badge-circle" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0" /></defs>
+        <text><textPath href="#badge-circle" textLength="224">MERHABA ★ MERHABA ★ </textPath></text>
+        <text class="c" x="50" y="58" text-anchor="middle">★</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="hero__copy">
+    <p class="hero__role">{site.name} · {site.role}</p>
+    <h1 class="hero__title" data-intro="title">
+      <span class="line"><span class="line__in">KOD</span></span>
+      <span class="line"><span class="line__in hl">YAZARIM.</span></span>
+    </h1>
+  </div>
+
+  <div class="hero__marquee">
+    <Marquee items={['Müsait', 'Proje alıyorum', 'Oyun yapıyorum', 'Uygulama yapıyorum']} tone="ink" speed={22} />
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: 100svh; position: relative; overflow: hidden;
+    display: grid; grid-template-rows: 1fr auto auto; grid-template-columns: minmax(0, 1fr);
+    padding-top: 96px;
+  }
+  .hero__stage { position: relative; display: grid; place-items: center; }
+  .hero__cube { width: min(62vw, 440px); }
+  .hero__badge {
+    position: absolute; top: 12%; right: max(var(--gutter), 12vw);
+    width: clamp(110px, 11vw, 160px); height: clamp(110px, 11vw, 160px); border-radius: 50%;
+    background: var(--ink); color: var(--accent); border: var(--border);
+        animation: spin 9s linear infinite;
+  }
+  .hero__badge svg { width: 100%; height: 100%; }
+  .hero__badge text { fill: var(--accent); font: 800 11px var(--font-mono); letter-spacing: 1px; }
+  .hero__badge text.c { font-size: 26px; }
+  .hero__copy { padding: 0 var(--gutter) 28px; position: relative; z-index: 3; }
+  .hero__role { font-weight: 800; margin: 0 0 .8em; letter-spacing: .04em; }
+  .hero__title { font-size: clamp(2.6rem, 10vw, 9.5rem); line-height: .9; }
+  .line { display: block; overflow: hidden; padding-bottom: .04em; }
+  .line__in { display: inline-block; }
+  @keyframes spin { to { rotate: 360deg; } }
+
+  @media (max-width: 767px) {
+    .hero__cube { width: 78vw; }
+    .hero__badge { translate: 0 0; left: var(--gutter); width: 76px; height: 76px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .hero__badge { animation: none; } }
+</style>
+
+<script>
+  import { gsap } from 'gsap';
+  import { prefersReducedMotion } from '../lib/motion';
+
+  function intro() {
+    const hero = document.getElementById('giris');
+    if (!hero || prefersReducedMotion() || hero.dataset.played) return;
+    hero.dataset.played = '1';
+    const tl = gsap.timeline({ defaults: { ease: 'back.out(1.7)' } });
+    tl.from(hero.querySelectorAll('.line__in'), { yPercent: 110, duration: 0.9, stagger: 0.12 })
+      .from(hero.querySelector('[data-intro="cube"]'), { scale: 0, rotate: -40, duration: 1.1, ease: 'elastic.out(1, .6)' }, 0.15)
+      .from(hero.querySelector('[data-intro="badge"]'), { scale: 0, rotate: -180, duration: 0.8 }, 0.45);
+  }
+  document.addEventListener('astro:page-load', intro);
+</script>

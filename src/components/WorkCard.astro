@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { titleLang } from '../lib/lang';
+
+interface Props { work: CollectionEntry<'works'>; index: number }
+const { work, index } = Astro.props;
+const { title, kind, summary, tech, cover } = work.data;
+const tilt = [-2, 1.5, -1, 2][index % 4];
+---
+<a class="work-card" href={`/isler/${work.id}`} style={`--tilt:${tilt}deg`} data-cursor-hover>
+  <div class="work-card__cover">
+    {cover
+      ? <img src={cover} alt="" loading="lazy" />
+      : <span class="work-card__glyph" aria-hidden="true">{title.slice(0, 1)}</span>}
+    <span class="work-card__num">{String(index + 1).padStart(2, '0')}</span>
+  </div>
+  <div class="work-card__body">
+    <p class="work-card__kind">{kind}</p>
+    <h3 lang={titleLang(title)}>{title}</h3>
+    <p class="work-card__summary">{summary}</p>
+    <ul class="work-card__tech">{tech.slice(0, 4).map((t) => <li>{t}</li>)}</ul>
+    <span class="work-card__go" aria-hidden="true">İNCELE ↗</span>
+  </div>
+</a>
+
+<style>
+  .work-card {
+    display: grid; grid-template-rows: auto 1fr; text-decoration: none; color: inherit;
+    background: var(--white); border: var(--border); box-shadow: var(--shadow);
+    rotate: var(--tilt);
+    transition: transform .4s var(--ease-spring), box-shadow .4s var(--ease-spring), rotate .4s var(--ease-spring);
+  }
+  .work-card:hover, .work-card:focus-visible { transform: translate(-4px, -4px); box-shadow: var(--shadow-lg); rotate: 0deg; }
+  .work-card__cover {
+    aspect-ratio: 16 / 10; border-bottom: var(--border); background: var(--accent);
+    position: relative; overflow: hidden; display: grid; place-items: center;
+  }
+  .work-card__cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease-spring); }
+  .work-card:hover .work-card__cover img { transform: scale(1.07) rotate(-1deg); }
+  .work-card__glyph { font: 900 clamp(5rem, 12vw, 9rem)/1 var(--font-display); transition: transform .6s var(--ease-spring); }
+  .work-card:hover .work-card__glyph { transform: rotate(-12deg) scale(1.1); }
+  .work-card__num {
+    position: absolute; left: 12px; top: 12px; background: var(--ink); color: var(--accent);
+    font-weight: 800; padding: .15em .5em;
+  }
+  .work-card__body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: .5em; }
+  .work-card__kind { margin: 0; font-size: .8rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .work-card h3 { font-size: clamp(1.6rem, 3vw, 2.4rem); }
+  .work-card__summary { margin: 0; }
+  .work-card__tech { list-style: none; padding: 0; margin: .3em 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .work-card__tech li { border: 2px solid var(--ink); padding: .05em .5em; font-size: .78rem; font-weight: 700; }
+  .work-card__go { margin-top: auto; align-self: flex-start; font-weight: 800; background: var(--accent); padding: .15em .55em; border: 2px solid var(--ink); }
+</style>

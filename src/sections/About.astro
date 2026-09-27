@@ -1,0 +1,43 @@
+---
+import Section from '../components/Section.astro';
+import Halftone from '../islands/Halftone.svelte';
+import { site } from '../data/site';
+
+const facts = [
+  { icon: '📍', text: site.location },
+  { icon: '🎓', text: 'Kırıkkale Üni. · Bilgisayar Programcılığı' },
+  { icon: '🚀', text: 'Yayında 4 proje' },
+  { icon: '🎮', text: 'Unity ile oyun yapıyor' },
+];
+---
+<Section id="hakkimda" kicker="02" title="Hakkımda">
+  <div class="about">
+    <div class="about__portrait">
+      <Halftone client:visible src={site.portrait} focus={site.portraitFocus} step={9} alt={`${site.name} portresi`} />
+    </div>
+    <div class="about__text">
+      <p class="about__lead">Ben <strong>{site.name}</strong>. Telefonda, tarayıcıda ve oyun motorunda çalışan şeyler yapıyorum.</p>
+      <p>Kırıkkale Üniversitesi Bilgisayar Programcılığı son sınıf öğrencisiyim. Blöf, Draw The Suspect, Elver ve Memento şu anda yayında ve tarayıcıdan denenebiliyor; Blöf ile Draw The Suspect gerçek zamanlı çok oyunculu oyunlar. Unity oyunum Plip ise itch.io'da.</p>
+      <p>Tek kod tabanından iOS, Android ve web'e çıkan ürünler kurmayı, gerçek zamanlı veri senkronizasyonunu ve yayına alma sürecini baştan sona kendim yaparak öğrendim.</p>
+      <p>Şu an tam zamanlı yazılım geliştirici olarak çalışabileceğim bir ekip arıyorum. Uzaktan çalışmaya ve şehir değiştirmeye açığım.</p>
+      <ul class="about__facts">
+        {facts.map((f, i) => <li style={`--r:${[-3, 2, -1.5, 3][i]}deg`}><span aria-hidden="true">{f.icon}</span> {f.text}</li>)}
+      </ul>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .about { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+  .about__portrait { border: var(--border); box-shadow: var(--shadow); background: var(--white); padding: 14px; rotate: -2deg; }
+  .about__text p { font-size: 1.05rem; max-width: 58ch; }
+  .about__lead { font-size: clamp(1.3rem, 2.4vw, 1.8rem) !important; line-height: 1.35; font-weight: 700; }
+  .about__lead strong { background: var(--accent); padding: 0 .2em; }
+  .about__facts { list-style: none; padding: 0; margin: 28px 0 0; display: flex; flex-wrap: wrap; gap: 12px; }
+  .about__facts li {
+    background: var(--white); border: var(--border); box-shadow: 4px 4px 0 var(--ink); padding: .45em .8em; font-weight: 800;
+    rotate: var(--r); transition: rotate .35s var(--ease-spring), transform .35s var(--ease-spring);
+  }
+  .about__facts li:hover { rotate: 0deg; transform: translateY(-4px); background: var(--accent); }
+  @media (max-width: 800px) { .about { grid-template-columns: 1fr; } .about__portrait { max-width: 420px; } }
+</style>

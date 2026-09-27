@@ -1,0 +1,16 @@
+:root {
+  --paper: #f4f4f0;
+  --ink: #0b0b0b;
+  --accent: #ff5a1f;
+  --white: #ffffff;
+
+  --border: 3px solid var(--ink);
+  --shadow: 8px 8px 0 var(--ink);
+  --shadow-lg: 12px 12px 0 var(--ink);
+  --ease-spring: cubic-bezier(.3, 1.6, .5, 1);
+
+  --font-display: 'Unbounded', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --gutter: clamp(16px, 4vw, 48px);
+}

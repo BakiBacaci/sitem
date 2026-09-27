@@ -1,0 +1,27 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  kicker?: string;
+  tone?: 'paper' | 'ink' | 'accent';
+}
+const { id, title, kicker, tone = 'paper' } = Astro.props;
+---
+<section id={id} class:list={['section', `section--${tone}`]}>
+  <header class="section__head">
+    {kicker && <p class="section__kicker">{kicker}</p>}
+    <h2 class="section__title" data-reveal-title set:html={title} />
+  </header>
+  <slot />
+</section>
+
+<style>
+  .section { padding: clamp(80px, 12vw, 160px) var(--gutter); position: relative; }
+  .section--ink { background: var(--ink); color: var(--paper); }
+  .section--accent { background: var(--accent); }
+  .section__head { margin-bottom: clamp(32px, 5vw, 64px); }
+  .section__kicker { font-weight: 800; letter-spacing: .12em; margin: 0 0 1.4em; }
+  .section__kicker::before { content: '// '; color: var(--accent); }
+  .section--accent .section__kicker::before { color: var(--ink); }
+  .section__title { font-size: clamp(2.6rem, 9vw, 7.5rem); }
+</style>

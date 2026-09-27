@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <g stroke="#0b0b0b" stroke-width="8" stroke-linejoin="round">
+    <polygon points="200,40 350,115 200,190 50,115" fill="#ff5a1f"/>
+    <polygon points="50,115 200,190 200,360 50,285" fill="#ff5a1f"/>
+    <polygon points="350,115 200,190 200,360 350,285" fill="#ffffff"/>
+  </g>
+  <text x="125" y="290" font-family="Arial Black,sans-serif" font-size="96" font-weight="900" fill="#0b0b0b" text-anchor="middle" transform="skewY(27) translate(0,-64)">B</text>
+  <text x="275" y="228" font-family="Arial Black,sans-serif" font-size="90" font-weight="900" fill="#0b0b0b" text-anchor="middle" transform="skewY(-27) translate(0,142)">★</text>
+</svg>
